@@ -37,8 +37,6 @@
 #- `\\` for a backslash
 #- `\r` for carriage return
 #- `\a` for an alert (bell sound)
-#
-#Would you like an example of using one of these in action?
 
 #----------------------------------
 #Checks if Skript is run as Sudo
