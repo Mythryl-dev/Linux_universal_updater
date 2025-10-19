@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Script Version: 8
+# Script Version: 10
 
 #------------------------------------------------
 # Documentation:
@@ -11,7 +11,8 @@
 # Colors must be added and changed
 # Tinycore Linux support
 # Puppy Linux support
-#add alias and setup script
+# add alias and setup script
+# add version check and auto update of the script
 #------------------------------------------------
 
 
@@ -61,7 +62,9 @@ Cyan='\033[0;36m'
 #Distro Detection Mechanisms
 #----------------------------------
 
+#------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 #For Debian based Distros
+#------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 function debianbased {
 #if [[ -f $(which nala 2>> /dev/null) ]] && [[ -f $(which apt 2>> /dev/null) ]] ; then
 if [[ -f $(which nala 2>> /dev/null) ]] && [[ -f $(which apt 2>> /dev/null) ]] && [ ! -f "/etc/apt/sources.list.d/neon.sources" ] ;then
@@ -77,9 +80,11 @@ if [[ -f $(which nala 2>> /dev/null) ]] && [[ -f $(which apt 2>> /dev/null) ]] &
         if [ "$apt_frontend" == "1" ]; then
             apt update
             apt upgrade
+            apt autoremove -y
         elif [ "$apt_frontend" == "2" ]; then
             nala update
             nala upgrade
+            nala autoremove -y
         elif [ "$apt_frontend" == "4" ]; then
             cd ~
             exit
@@ -456,10 +461,17 @@ waydroidupdate
 #-------------------------------------------------------------
 
 #-------------------------------------------------------------
+#Updates the script it self
+#-------------------------------------------------------------
+( wget -q -O /usr/bin/update https://raw.githubusercontent.com/Mythryl-dev/Linux_universal_updater/refs/heads/main/Update.sh && chmod 755 /usr/bin/update ) >/dev/null 2>&1 &
+#-------------------------------------------------------------
+
+
+#-------------------------------------------------------------
 #After Updating
 #-------------------------------------------------------------
 echo ""
-echo -e "${RED}Thank you for using the Mythryls universal updater${NC}"
+echo -e "${RED}Thank you for using Mythryl's Universal Updater${NC}"
 echo ""
 cd ~
 exit
