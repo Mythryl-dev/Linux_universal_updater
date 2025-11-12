@@ -1,53 +1,57 @@
 #!/bin/bash
 
-# Script Version: 10
+#------------------------------------------------
+# Mythryl's Universal Linux Updater
+# Script Version: 11
+#------------------------------------------------
 
 #------------------------------------------------
-# Documentation:
+# Must be changed:
 #------------------------------------------------
 # add a nice logo
 # After Update Message must be redesigned
 # multiple language support must be added
 # Colors must be added and changed
-# Tinycore Linux support
-# Puppy Linux support
-# add alias and setup script
 # add version check and auto update of the script
+# add licence
 #------------------------------------------------
 
 
-
 #------------------------------------------------
-#Code Snippes for guidance
+# Documentation
 #------------------------------------------------
-#In Bash, the command `echo` is used to print text to the terminal. The `-e` option tells `echo` to enable the interpretation of escape sequences, which allows special characters like newline (`\n`), tab (`\t`), and others #to be processed.
-
-#For example:
-#```bash
-#echo -e "Hello\nWorld"
-#```
-#This will output:
-#```
-#Hello
-#World
-#```
-
-#Without the `-e` option, escape sequences like `\n` would be printed as plain text rather than interpreted as newlines.
-
-#Some common escape sequences used with `echo -e` include:
-#- `\n` for a newline
-#- `\t` for a tab
-#- `\\` for a backslash
-#- `\r` for carriage return
-#- `\a` for an alert (bell sound)
+# This script provides a unified interface to update multiple Linux distributions
+# with their respective package managers. It supports system-level, Flatpak, Snap # and Waydroid updates, and includes a self-update feature.
+#
+#  Supported Distros:
+# - Debian / Ubuntu / Mint / Neon etc (apt, nala, pkcon)
+# - Arch / Manjaro / Garuda (pacman, paru, yay)
+# - Fedora / RHEL / CentOS (dnf, yum)
+# - OpenSUSE (zypper)
+# - Alpine (apk)
+# - Void (xbps)
+# - Slackware (slackpkg)
+# - Gentoo (emerge)
+# - Puppy Linux (ppm/pkg)
+# - TinyCore Linux (tce-update)
+#
+#  Usage:
+# Run the script as root using:
+#     sudo ./update.sh
+# or after installing globally:
+#     sudo update
+#
+# The script automatically detects your distro and offers relevant update options.
+#------------------------------------------------
 
 #----------------------------------
 #Checks if Skript is run as Sudo
 #----------------------------------
 if [ $EUID -ne 0 ]; then
-    echo -e '\n** ERROR => Must be run with sudo to function properly\n'
+    echo -e '\n** ERROR => Must be run with sudo or su to function properly\n'
     exit 1
 fi
+
 #----------------------------------
 #Distro Color Coding Variables
 #----------------------------------
@@ -58,15 +62,16 @@ Orange='\033[38;5;202m'
 Green='\033[0;32m'
 Purple='\033[0;35m'
 Cyan='\033[0;36m'
+
 #----------------------------------
 #Distro Detection Mechanisms
 #----------------------------------
 
 #------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-#For Debian based Distros
+#For Debian based Distros       #Red
 #------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 function debianbased {
-#if [[ -f $(which nala 2>> /dev/null) ]] && [[ -f $(which apt 2>> /dev/null) ]] ; then
 if [[ -f $(which nala 2>> /dev/null) ]] && [[ -f $(which apt 2>> /dev/null) ]] && [ ! -f "/etc/apt/sources.list.d/neon.sources" ] ;then
         echo -e "${RED}--------------------------------------------------------------------------------------------------------------------${NC}"
         echo -e "${RED}|${NC} Which apt frontend would you like to use?                                                                        ${RED}|${NC}"
@@ -78,31 +83,22 @@ if [[ -f $(which nala 2>> /dev/null) ]] && [[ -f $(which apt 2>> /dev/null) ]] &
 
         read apt_frontend
         if [ "$apt_frontend" == "1" ]; then
-            apt update
-            apt upgrade
-            apt autoremove -y
+            apt update && apt upgrade -y && apt autoremove -y
         elif [ "$apt_frontend" == "2" ]; then
-            nala update
-            nala upgrade
-            nala autoremove -y
+            nala update && nala upgrade -y && nala autoremove -y
         elif [ "$apt_frontend" == "4" ]; then
-            cd ~
-            exit
-
+            cd ~ && exit
         elif [ "$apt_frontend" == "3" ]; then
             return
         else
             echo "Invalid option selected."
         fi
-
-elif [[ -n $(which nala 2>> /dev/null) ]] && ! [[ -f $(which pkcon 2>> /dev/null) ]]; then
-     nala update
-     nala upgrade
-elif [[ -n $(which apt 2>> /dev/null) ]] && ! [[ -f $(which pkcon 2>> /dev/null) ]]; then
-     apt update
-     apt upgrade
-
+elif [[ -n $(which nala 2>> /dev/null) ]]; then
+     nala update && nala upgrade -y
+elif [[ -n $(which apt 2>> /dev/null) ]]; then
+     apt update && apt upgrade -y
 fi
+
 #echo "1"
 }
 
@@ -149,7 +145,7 @@ echo "2"
 }
 
 #------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-#Alpine linux                       #Blau
+#Alpine linux                       #Blau  problem with installation an sudo
 #------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 function alpinebased {
 if [[ -f $(which apk 2>> /dev/null) ]]; then
@@ -161,11 +157,12 @@ if [[ -f $(which apk 2>> /dev/null) ]]; then
         return
     elif [ "$apk_update" == "J" ] ||  [ "$apk_update" == "j" ] || [ "$apk_update" == "" ] ; then
         apk update
-        apk upgrade -Su
+        apk upgrade --no-interactive #may needs to be changed
     fi
 fi
 #echo "3"
 }
+
 
 #------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 # For Arch based Distros            #Blau
@@ -259,19 +256,22 @@ fi
 #echo "4"
 }
 
+
 #------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-#Opensuse                           #Grün
+#Opensuse                           #Grün           corrected to new package manager with correct spelling
 #------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 function susebased {
-if [[ -f $(which zypher 2>> /dev/null) ]]; then
+if [[ -f $(which zypper 2>> /dev/null) ]]; then
     echo -e "${GREEN}-----------------------------------------------------${NC}"
     echo -e "${GREEN}|${NC} Would you like to update your Packages?            ${GREEN}|${NC}"
     echo -e "${GREEN}-----------------------------------------------------${NC}"
-    read -p "[J/n] " zypher_dup
-    if  [ "$zypher_dup" == "n" ]; then
+    read -p "[J/n] " zypper_dup
+    if  [ "$zypper_dup" == "n" ]; then
         return
-    elif [ "$zypher_dup" == "J" ] ||  [ "$zypher_dup" == "j" ] || [ "$zypher_dup" == "" ] ; then
-        zypper dup
+    elif [ "$zypper_dup" == "J" ] ||  [ "$zypper_dup" == "j" ] || [ "$zypper_dup" == "" ] ; then
+        #zypper dup   old update command, no lnger used
+        zypper refresh
+        zypper update
     fi
 fi
 #echo "5"
@@ -317,6 +317,12 @@ fi
 #Void linux                         #Grün
 #------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 function voidbased {
+if  [[ -f $(which xtools 2>> /dev/null) ]]; then
+    return
+    else
+        echo -e "${RED}Please install xtools via ''sudo xbps-install xtools'' it is requiered to restart services after an update ${NC}"
+fi
+
 if [[ -f $(which xpbs 2>> /dev/null) ]]; then
     echo -e "${GREEN}-----------------------------------------------------${NC}"
     echo -e "${GREEN}|${NC} Would you like to update your Packages?            ${GREEN}|${NC}"
@@ -325,15 +331,17 @@ if [[ -f $(which xpbs 2>> /dev/null) ]]; then
     if  [ "$xbps_update" == "n" ]; then
         return
     elif [ "$xbps_update" == "J" ] ||  [ "$xbps_update" == "j" ] || [ "$xbps_update" == "" ] ; then
-        xbps-install -Su
-        xcheckrestart
+        xbps-install -Su #updates repos
+        xbps-install -Su #must be run again to actually install the updates
+        xcheckrestart #xtools must be installed to restart the procceses with this command
     fi
 fi
 #echo "7"
 }
 
+
 #------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-#For Slackware based distros        #Blau
+#For Slackware based distros        #Blau           untested
 #------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 function slackwarebased {
 if [[ -f $(which slackpkg 2>> /dev/null) ]]; then
@@ -345,8 +353,10 @@ if [[ -f $(which slackpkg 2>> /dev/null) ]]; then
         cd ~
         exit
     elif [ "$slackpkg_update" == "J" ] ||  [ "$slackpkg_update" == "j" ] || [ "$slackpkg_update" == "" ] ; then
-        slackpkg update
+        slackpkg update                 #https://www.linuxquestions.org/questions/slackware-14/slackware-15-0-how-do-i-update-for-just-the-last-changes-4175726356/
+        slackpkg install-new
         slackpkg upgrade-all
+        slackpkg clean-system
     fi
 fi
 #echo "8"
@@ -373,21 +383,36 @@ fi
 }
 
 #------------------------------------------------------------
-#Puppy Linux variants you have to see wich one works
+# Puppy Linux variants
 #------------------------------------------------------------
-#pkg -i update
+function puppybased {
+if [[ -f $(which ppm 2>> /dev/null) ]]; then
+    echo -e "${Orange}-----------------------------------------------------${NC}"
+    echo -e "${Orange}|${NC} Would you like to upgrade Puppy Packages?          ${Orange}|${NC}"
+    echo -e "${Orange}-----------------------------------------------------${NC}"
+    read -p "[J/n] " puppy_update
+    if [ "$puppy_update" != "n" ]; then
+        ppm upgrade --install
+    fi
+elif [[ -f $(which pkg 2>> /dev/null) ]]; then
+    pkg -i update
+fi
+#echo 10
+}
 
-#Puppy Tarbals
-#ppm upgrade --install
-#should work work for most puppy packages all the other ones have to be update via the respective PuppyLinux flavour's package Manager
+
 
 #------------------------------------------------------------
-#Tinycore Linux
+# TinyCore Linux
 #------------------------------------------------------------
-#tce-update oder
-#tce-load -wi tce-update  wenn ersteres nicht vorhanden ist
-#je nach version von tinycore
-
+function tinycorebased {
+if [[ -f $(which tce-update 2>> /dev/null) ]]; then
+    tce-update #works
+elif [[ -f $(which tce-load 2>> /dev/null) ]]; then
+    tce-load -wi tce-update #don't know what it does
+fi
+#echo 11
+}
 
 
 #------------------------------------------------------------
@@ -452,6 +477,9 @@ voidbased
 slackwarebased
 gentoobased
 
+puppybased
+tinycorebased
+
 #-------------------------------------------------------------
 #Special Package calls
 #-------------------------------------------------------------
@@ -475,3 +503,5 @@ echo -e "${RED}Thank you for using Mythryl's Universal Updater${NC}"
 echo ""
 cd ~
 exit
+
+
