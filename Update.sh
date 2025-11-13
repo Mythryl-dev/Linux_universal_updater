@@ -317,7 +317,8 @@ fi
 #Void linux                         #Grün
 #------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 function voidbased {
-if  [[ -n $(which xtools 2>> /dev/null)]] &&  [[-f $(which xpbs 2>> /dev/null)]]; then
+#if  [[ -n $(which xtools 2>> /dev/null)]] &&  [[-f $(which xpbs 2>> /dev/null)]]; then
+if [[ -n $(which xtools) ]] && [[ -f $(which xpbs) ]]; then
     return
     else
         echo -e "${RED}Please install xtools via ''sudo xbps-install xtools'' it is requiered to restart services after an update ${NC}"
