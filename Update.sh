@@ -2,7 +2,7 @@
 
 #------------------------------------------------
 # Mythryl's Universal Linux Updater
-# Script Version: 11
+# Script Version: 12
 # Copyright (c) 2025 Mythryl-dev
 #------------------------------------------------
 
@@ -185,7 +185,7 @@ if [[ -f $(which pacman 2>> /dev/null) ]] && [[ -f $(which paru 2>> /dev/null) ]
             pacman -Syu
         elif [ "$pacman_frontend" == "2" ]; then
             paru -Syu
-        elif [ "$apt_frontend" == "3" ]; then
+        elif [ "$pacman_frontend" == "3" ]; then
             yay
 
         elif [ "$pacman_frontend" == "4" ]; then
@@ -304,7 +304,7 @@ if [[ -f $(which dnf 2>> /dev/null) ]] && [[ -f $(which yum 2>> /dev/null) ]] ; 
         elif [ "$dnf_frontend" == "4" ]; then
             cd ~
             exit
-        elif [ "$dnf_frontend" == "4" ]; then
+        elif [ "$dnf_frontend" == "5" ]; then
             return
         else
             echo "Invalid option selected."
@@ -432,11 +432,16 @@ if [[ -f $(which flatpak 2>> /dev/null) ]]; then
         flatpak update
     fi
 fi
+#echo a
 }
 
 #For updating Snap packages (mainly present in Ubuntu and its flavours) use:
 function snapdupdate {
-if [[ -f $(which snapd 2>> /dev/null) ]]; then
+#if [[ -f $(which snapd 2>> /dev/null) ]] ;then //does not always work because snap is a deamon
+#if command -v snap >/dev/null 2>&1 || systemctl is-active --quiet snapd; then
+if command -v snap >/dev/null 2>&1 || \
+   (command -v systemctl >/dev/null 2>&1 && systemctl is-active --quiet snapd); then #works on non systemd systems.
+
     echo -e "${Orange}-----------------------------------------------------${NC}"
     echo -e "${Orange}|${NC} Would you also like to update your Snap Packages? ${Orange}|${NC}"
     echo -e "${Orange}-----------------------------------------------------${NC}"
@@ -447,6 +452,7 @@ if [[ -f $(which snapd 2>> /dev/null) ]]; then
         snap refresh
     fi
 fi
+#echo b
 }
 
 #For Updating the Android Subsystem in Case it is installed.
@@ -462,6 +468,7 @@ if [[ -f $(which waydroid 2>> /dev/null) ]]; then
         waydroid upgrade
     fi
 fi
+#echo c
 }
 #-------------------------------------------------------------
 
