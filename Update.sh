@@ -14,7 +14,6 @@
 # multiple language support must be added
 # Colors must be added and changed
 # add version check and auto update of the script
-# add licence
 #------------------------------------------------
 
 
@@ -426,7 +425,7 @@ if [[ -f $(which flatpak 2>> /dev/null) ]]; then
     echo -e "${Blue}|${NC} Would you like to update your flatpaks?           ${Blue}|${NC}"
     echo -e "${Blue}-----------------------------------------------------${NC}"
     read -p "[J/n] " flatpak_update
-    if  [ " $flatpak_update" == "n" ]; then
+    if  [ "$flatpak_update" == "n" ]; then
         return
     elif [ "$flatpak_update" == "J" ] ||  [ "$flatpak_update" == "j" ] || [ "$flatpak_update" == "" ] ; then
         flatpak update
