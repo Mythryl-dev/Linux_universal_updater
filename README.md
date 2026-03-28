@@ -1,3 +1,29 @@
+
+# Documentation
+
+This script provides a unified interface to update multiple Linux distributions
+with their respective package managers. It supports system-level, Flatpak, Snap and Waydroid updates, and includes a self-update feature.
+
+# Supported Distros:
+- Debian / Ubuntu / Mint / Neon etc (apt, nala, pkcon)
+ - Arch / Manjaro / Garuda (pacman, paru, yay)
+ - Fedora / RHEL / CentOS (dnf, yum)
+ - OpenSUSE (zypper)
+ - Void (xbps)
+ - Gentoo (emerge)
+ - Puppy Linux (ppm/pkg)
+ - TinyCore Linux (tce-update)
+The script automatically detects your distro and offers relevant update options.
+
+# Semi Supported Distros (Functionally need's to be tested further):
+ The script automatically detects your distro and offers relevant update options.
+  - Slackware (slackpkg) &emsp; &emsp; &emsp; could not be tested as of now
+  -  Alpine (apk) &emsp; &emsp; &emsp; &emsp; &emsp; &emsp; has some problems with running the script as sudo
+
+# Other Supported Package formats and tools:
+- Flatpak
+- Snap
+- Waydroid
 # Setup
 To set up the script enter the following command into your terminal:
 
