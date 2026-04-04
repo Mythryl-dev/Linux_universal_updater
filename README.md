@@ -13,6 +13,7 @@ with their respective package managers. It supports system-level, Flatpak, Snap 
  - Gentoo (emerge)
  - Puppy Linux (ppm/pkg)
  - TinyCore Linux (tce-update)
+   
 The script automatically detects your distro and offers relevant update options.
 
 # Semi Supported Distros (Functionally need's to be tested further):
