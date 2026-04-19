@@ -5,6 +5,7 @@ This script provides a unified interface to update multiple Linux distributions
 with their respective package managers. It supports system-level, Flatpak, Snap and Waydroid updates, and includes a self-update feature.
 
 # Supported Distros / Package Managers:
+The script automatically detects your distro and offers relevant update options.
 | Distro Family                     | Package Managers              |
 |----------------------------------|-------------------------------|
 | Debian / Ubuntu / Mint / Neon    | apt, nala, pkcon              |
@@ -16,15 +17,11 @@ with their respective package managers. It supports system-level, Flatpak, Snap 
 | Puppy Linux                      | ppm / pkg                     |
 | TinyCore Linux                   | tce-update                    |
 | Slackware                        | slackpkg                      |
-
-
-   
-The script automatically detects your distro and offers relevant update options.
+| Alpine                           | apk                           |
 
 # Semi Supported Distros (Functionally need's to be tested further):
  The script automatically detects your distro / packagemanager and offers relevant update options.
- 
-  -  Alpine (apk) &emsp; &emsp; &emsp; &emsp; &emsp; &emsp; has some problems with running the script as sudo
+  -  &emsp; &emsp; &emsp; &emsp; &emsp; &emsp; 
 
 # Other Supported Package formats and tools:
 - Flatpak
