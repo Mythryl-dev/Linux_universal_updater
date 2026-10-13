@@ -27,6 +27,7 @@ The script automatically detects your distro and offers relevant update options.
 - Flatpak
 - Snap
 - Waydroid
+- atuin
 # Setup
 To set up the script enter the following command into your terminal:
 
