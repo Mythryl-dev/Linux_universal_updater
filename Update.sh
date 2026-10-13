@@ -2,8 +2,8 @@
 
 #------------------------------------------------
 # Mythryl's Universal Linux Updater
-# Script Version: 12
-# Copyright (c) 2025 Mythryl-dev
+# Script Version: 13
+# Copyright (c) 2026 Mythryl-dev
 #------------------------------------------------
 
 #------------------------------------------------
@@ -13,7 +13,6 @@
 # After Update Message must be redesigned
 # multiple language support must be added
 # Colors must be added and changed
-# add version check and auto update of the script
 #------------------------------------------------
 
 
@@ -21,7 +20,7 @@
 # Documentation
 #------------------------------------------------
 # This script provides a unified interface to update multiple Linux distributions
-# with their respective package managers. It supports system-level, Flatpak, Snap # and Waydroid updates, and includes a self-update feature.
+# with their respective package managers. It supports system-level, Flatpak, Snap and Waydroid updates, and includes a self-update feature.
 #
 #  Supported Distros:
 # - Debian / Ubuntu / Mint / Neon etc (apt, nala, pkcon)
@@ -145,7 +144,7 @@ fi
 }
 
 #------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-#Alpine linux                       #Blau  problem with installation an sudo
+#Alpine linux                       #Blau  problem with installation an sudo   (sudo has to be installed and configured first for the skript to work)
 #------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 function alpinebased {
 if [[ -f $(which apk 2>> /dev/null) ]]; then
@@ -341,7 +340,7 @@ fi
 
 
 #------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-#For Slackware based distros        #Blau           untested
+#For Slackware based distros        #Blau
 #------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 function slackwarebased {
 if [[ -f $(which slackpkg 2>> /dev/null) ]]; then
@@ -431,6 +430,7 @@ if [[ -f $(which flatpak 2>> /dev/null) ]]; then
         flatpak update
     fi
 fi
+#this may seem to hang but then it is just updating meta data wich takes a while and has no output
 #echo a
 }
 
@@ -469,6 +469,29 @@ if [[ -f $(which waydroid 2>> /dev/null) ]]; then
 fi
 #echo c
 }
+
+#For Updating Atuin Shell History
+function atuinupdate {
+ local target_user="${SUDO_USER:-}" #required cuz atuin does not work with sudo
+    if [[ -z "$target_user" || "$target_user" == "root" ]]; then
+        return
+    fi
+
+    if sudo -u "$target_user" bash -lc 'command -v atuin >/dev/null 2>&1'; then
+        echo -e "${Green}-----------------------------------------------------${NC}"
+        echo -e "${Green}|${NC} Would you like to update Atuin shell-history?     ${Green}|${NC}"
+        echo -e "${Green}-----------------------------------------------------${NC}"
+
+        read -r -p "[J/n] " atuin_update
+
+        if [[ "$atuin_update" == "n" || "$atuin_update" == "N" ]]; then
+            return
+        elif [[ "$atuin_update" == "J" || "$atuin_update" == "j" || -z "$atuin_update" ]]; then
+            sudo -u "$target_user" bash -lc 'atuin update'
+        fi
+    fi
+}
+
 #-------------------------------------------------------------
 
 #-------------------------------------------------------------
@@ -493,6 +516,7 @@ tinycorebased
 flatpakupdate
 snapdupdate
 waydroidupdate
+atuinupdate
 #-------------------------------------------------------------
 
 #-------------------------------------------------------------
