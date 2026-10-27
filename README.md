@@ -1,3 +1,6 @@
+# Linux_Universal_Updater
+[![License](https://img.shields.io/badge/License-MPL%202.0-blue.svg)](https://github.com/Mythryl-dev/Linux_universal_updater/blob/main/LICENSE)
+[![Platform](https://img.shields.io/badge/Platform-Linux-darkgrey.svg?)](https://www.kernel.org/)
 
 # Documentation
 
